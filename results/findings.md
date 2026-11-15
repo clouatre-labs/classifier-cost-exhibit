@@ -40,8 +40,15 @@ records under `results/pilot/` are excluded.
 
 The accuracy-best model (random forest) misses **every** defect across all 30
 test folds (mean fail recall 0.0000; precision identically 0.0000, since it
-never predicts the fail class at all). The challenger (k-NN, second by mean
-accuracy) misses fewer: mean fail recall 0.0388.
+never predicts the fail class at all: its maximum predicted fail probability
+is 0.45, below the 0.5 cutoff on every unit). The challenger (k-NN, second by
+mean accuracy) misses fewer: mean fail recall 0.0388, with nonzero recall in
+10 of 30 folds (0.09 and 0.10 in four folds each, 0.20 in two).
+
+Accuracy is not a consolation for the challenger: on per-fold accuracy the
+random forest is better in 14 of 17 nonzero folds (descriptive addendum, not
+the pre-registered test; two-sided exact binomial p ≈ 0.013) - it is
+significantly more accurate and defect-blind at the same time.
 
 Sign test (pre-specified): per-fold recall difference is nonzero in 10 of 30
 folds; the challenger has higher recall in **10 of 10 nonzero folds**
@@ -52,7 +59,13 @@ the pinned tie rule.
 
 ### Co-primary endpoint: threshold alignment reverses the cost ranking
 
-Expected cost (14:1 baseline), pooled over all folds:
+This is the seal's pinned threshold comparison
+(`cost_analysis.thresholds_compared`: 0.5 vs `p_star` at the baseline ratio),
+reported descriptively per the pre-registration; the sweep behind Figure 2 is
+likewise descriptive.
+
+Expected cost (14:1 baseline), pooled over all folds. Pooling weights each
+of the 1,567 units exactly 3 times (once per repeat), i.e. equally:
 
 | Model | Cost at 0.5 | Cost at p* = 1/15 |
 | --- | --- | --- |
@@ -67,13 +80,24 @@ p* = 1/15 the same random forest becomes cost-**best** (2991): the model
 family that misses every defect at the default threshold wins on total
 expected cost once the threshold matches the cost matrix (Figure 2). The
 mechanism is visible in Figure 4: random-forest probabilities are graded
-around 0.1, so a lower cutoff trades cheap false positives for expensive
-false negatives; the decision tree's degenerate 0/1 outputs make the
+(pooled median 0.06, 95th percentile 0.23, maximum 0.45 - never crossing the
+default cutoff), so a lower threshold trades cheap false positives for
+expensive false negatives (at p* the random forest buys 83 FN instead of 312
+for 1,829 FP); the decision tree's degenerate {0, 1} outputs make the
 threshold irrelevant (4005 at both thresholds).
 
 Sensitivity at 10:1 preserves the ordering at p* (logistic regression 2620 <
 random forest 2659 < k-NN 2808 < decision tree 2957; random forest and
-logistic regression effectively tie).
+logistic regression effectively tie). The sensitivity ratio changes the cost
+weights only; the threshold comparison still uses 0.5 vs p* = 1/15 (a 10:1
+ratio would imply its own aligned threshold of 1/11, which the
+pre-registered run does not evaluate).
+
+`analysis.json` records `ranking_flip_vs_accuracy: false`: that flag compares
+the **p\*** cost ranking with the accuracy ranking (random forest is first in
+both). The ranking flip the exhibit highlights is at the **default 0.5
+threshold**, where random forest drops from first by accuracy to last by
+cost.
 
 Figures:
 
