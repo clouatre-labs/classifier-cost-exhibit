@@ -4,15 +4,15 @@ Experimental design and analysis plan for experiments in this repository. Replac
 
 ## Research Question
 
-TODO: State the hypothesis or question the repo's experiments address. Frame it so a null result is still informative.
+Does the accuracy-optimal classifier on the UCI SECOM dataset miss more defects than a lower-accuracy alternative under an explicit error-cost matrix, and does a cost-aligned decision threshold (p* = FP/(FP+FN)) reverse the ranking? Framed so that a null result (the accuracy-best model also cost-best at both thresholds) is as informative as the inversion.
 
 ## Pre-Registration
 
-Every experiment MUST have its protocol, rubric, and scoring prompts committed under `experiments/<slug>/` BEFORE any session is run. The commit containing the pre-registration must precede the first run record; edits after data collection begins require a dated addendum in the experiment's `protocol.md`.
+The protocol is committed in `seal.json` BEFORE any sealed `fit()` call: pinned dataset SHA256 digests, splitter (`RepeatStratifiedKFold`, 10x3, seed 0), preprocessing pipeline, models and hyperparameters, numeric guards, cost ratios (14:1 baseline, 10:1 sensitivity), and the statistical test (two-sided exact binomial sign test, alpha 0.05). The commit containing the seal must precede the first sealed fold record; edits after data collection begins require a dated addendum.
 
-- Rubric criteria are defined before examining any model output.
-- Group assignments are sealed in `label-map.json` before scoring begins.
-- Statistical tests are named in the protocol before data collection.
+- Endpoints are named in the seal before any model output is examined.
+- The pilot dry run (2 folds, plumbing only) passes before the seal and is excluded from the primary analysis.
+- Statistical tests are fixed in `seal.json` before data collection.
 
 ## Experimental Design
 
@@ -29,7 +29,7 @@ Scorers receive only the output artifacts and the rubric. No group labels, run m
 
 ## Analysis Plan
 
-Analysis results land in `experiments/<slug>/analysis.json` (schema in [DATA_DICTIONARY.md](DATA_DICTIONARY.md), enforced by `validate_schema.py`). Scores with per-criterion justifications land in `scores.json`. Figures are generated from `recipe/` scripts into `figures/`.
+Raw per-fold records (full `y_true`/`y_prob` arrays) land in `results/raw/fold-00..29.json`; the sealed analysis lands in `results/raw/analysis.json` (schemas in [DATA_DICTIONARY.md](DATA_DICTIONARY.md), enforced by `validate_schema.py`). Every reported number re-derives from the committed records via the committed [analysis.py](analysis.py). Figures are generated from the scripts in `figures/` into `figures/`.
 
 ## Threats to Validity
 

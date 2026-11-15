@@ -4,57 +4,31 @@ This document defines the schema and field meanings for experiment data files in
 
 ## Layout
 
-Each experiment directory `experiments/<slug>/` contains:
+This repository runs one pre-registered experiment (`secom-cost-threshold`) at the repo root; `experiments/example-fixture/` is the CI schema-validation fixture only.
 
-- `analysis.json`: run metadata, message counts, and evaluation scores (schema below)
-- `scores.json`: per-criterion rubric scores with justifications
-- `protocol.md`, `runner-prompt.md`, `scorer-prompt.md`: pre-registration artifacts
-- `sessions/`: raw session logs or database exports
+- `seal.json`: pre-registered protocol (schema below)
+- `results/raw/fold-00..29.json`: sealed per-fold records (schema below)
+- `results/pilot/fold-00..01.json`: pilot records, excluded from the primary analysis
+- `results/raw/analysis.json`: sealed analysis output of `analysis.py`
+- `results/findings.md`: sealed findings
 
-## analysis.json
+## Derived analysis (`results/raw/analysis.json`)
 
-### Top-level schema
+Written by `analysis.py` from the raw fold records; not validated by `validate_schema.py` (the raw records and seal are).
 
-| Field | Type | Nullable | Description |
-|-------|------|----------|-------------|
-| `experiment` | string | no | Experiment slug, matches the directory name |
-| `schema_version` | string | no | Version of this schema the record conforms to |
-| `title` | string | no | Human-readable experiment title |
-| `issue` | string \| null | yes | Target issue or task reference |
-| `date` | string | no | Experiment date (YYYY-MM-DD) |
-| `model` | string | no | Model identifier under test |
-| `n_per_group` | integer | no | Number of runs per group |
-| `control_condition` | string | no | Description of the control condition |
-| `treatment_condition` | string | no | Description of the treatment condition |
-| `rubric_version` | string | no | Rubric identifier used for scoring |
-| `orchestrator_session` | string \| null | yes | Orchestrator session reference, if any |
-| `repo_head` | string | no | Repository commit at run time |
-| `experiment_start` | string | no | ISO 8601 timestamp with UTC offset of first run |
-| `experiment_end` | string | no | ISO 8601 timestamp with UTC offset of last run |
-| `analyzed_at` | string | no | ISO 8601 timestamp with UTC offset of analysis |
-| `runs` | object | no | Map of run ID to run record |
-| `scores` | object | no | Scoring summary keyed by run ID |
-| `statistical_test` | string | no | Pre-registered statistical test name |
-| `conclusion` | string | no | Result summary |
-| `pre_acknowledged_limitations` | array | no | Limitations stated before analysis |
-
-### Run record schema
-
-| Field | Type | Nullable | Description |
-|-------|------|----------|-------------|
-| `group` | string | no | `control` or `treatment` |
-| `session_id` | string | no | Session identifier from the run harness |
-| `messages` | integer | no | Message count in the session |
-| `input_tokens` | integer | no | Accumulated input tokens |
-| `output_tokens` | integer | no | Accumulated output tokens |
-| `total_tokens` | integer | no | Sum of input and output tokens |
-| `wall_clock_seconds` | number | no | Elapsed wall-clock seconds |
-| `bytes` | integer \| null | yes | Session byte size, if recorded |
-| `note` | string \| null | yes | Optional note (e.g. failure reason) |
-
-## scores.json
-
-Free-form per-criterion scoring keyed by run ID; each entry SHOULD include the score value, per-criterion results, and scorer justifications.
+| Field | Type | Description |
+|-------|------|-------------|
+| `schema_version` | string | Schema version, `1.0.0` |
+| `experiment` | string | Experiment slug, `secom-cost-threshold` |
+| `n_folds` | integer | Number of sealed folds (30) |
+| `p_star` | number | Cost-aligned threshold, FP/(FP+FN) |
+| `mean_accuracy` | object | Mean accuracy per model |
+| `mean_recall_fail` / `mean_precision_fail` | object | Mean fail-class recall/precision per model |
+| `accuracy_ranking` / `cost_ranking_at_p_star_baseline` | array | Model orderings by accuracy and cost at p* |
+| `accuracy_best` / `challenger` | string | Slug of the accuracy-best and second-ranked models |
+| `primary` | object | Sign-test block: test name, `n_nonzero`, `k_challenger_better`, `p_value`, `alpha`, `significant`, mean recalls, descriptive inversions |
+| `cost` | object | Expected cost per model at the 0.5 and p* thresholds, 14:1 and 10:1 ratios |
+| `ranking_flip_vs_accuracy` | object | Accuracy rank versus cost-at-0.5 rank per model |
 
 ## seal.json (experiment `secom-cost-threshold`)
 

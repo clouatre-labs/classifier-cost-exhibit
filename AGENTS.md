@@ -9,7 +9,7 @@ Pre-registered evaluation exhibit on the UCI SECOM dataset: tests whether the ac
 Python 3 via [uv](https://docs.astral.sh/uv/); no third-party dependencies.
 
 ```
-# build:  n/a (analysis repo; figures regenerate via recipe/)
+# build:  n/a (analysis repo; figures regenerate via figures/)
 # test:   uv run python validate_schema.py --self-test
 # lint:   uv run python validate_schema.py
 # format: n/a
