@@ -87,7 +87,7 @@ def check_schema(record, path, errors):
 
 
 def load_records(records_dir):
-    paths = sorted(pathlib.Path(records_dir).glob("*.json"))
+    paths = sorted(pathlib.Path(records_dir).glob("fold-*.json"))
     records = []
     errors = []
     for path in paths:
