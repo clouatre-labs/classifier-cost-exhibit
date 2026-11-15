@@ -6,6 +6,7 @@ authors:
   - family-names: "Clouatre"
     given-names: "Hugues"
     orcid: "https://orcid.org/0009-0002-4291-1999"
+    affiliation: "Université de Bordeaux"
 repository-code: https://github.com/clouatre-labs/classifier-cost-exhibit
 license: Apache-2.0
 date-released: "2026-11-15"
@@ -21,3 +22,10 @@ keywords:
   - imbalanced-data
   - pre-registered-experiment
   - reproducibility
+identifiers:
+  - value: 10.5281/zenodo.24259667
+    type: doi
+    description: Concept DOI (all versions)
+  - value: 10.5281/zenodo.24259668
+    type: doi
+    description: Version-specific DOI for v0.1.0

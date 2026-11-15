@@ -2,6 +2,7 @@
 
 # Classifier Cost Exhibit
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24259667.svg)](https://doi.org/10.5281/zenodo.24259667)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Result](https://img.shields.io/badge/primary-sign_test_p%3D0.002_inversion_holds-red)](results/findings.md)
 [![Folds](https://img.shields.io/badge/folds-30_(3x10)_seeded-blue)](seal.json)
@@ -90,6 +91,10 @@ All figures derive only from the committed raw records via the committed scripts
 
 *Figure 4: Predicted fail-class probability distributions per model (fail units rescaled for visibility); dashed vertical at 0.5, dotted at 1/15. Random forest and logistic regression produce graded outputs; the decision tree is degenerate at 0 and 1.*
 
+## Data Availability
+
+This repository contains the complete sealed protocol, raw per-fold records, analysis, and figure scripts; nothing has been excluded or selectively reported. The experiment is written up at [Accuracy, cost matrix, threshold](https://clouatre.ca/posts/accuracy-cost-matrix-threshold/). Release v0.1.0 and DOI [10.5281/zenodo.24259667](https://doi.org/10.5281/zenodo.24259667) archive the exhibit.
+
 ## Repository Layout
 
 - [seal.json](seal.json) - the pre-registered protocol: pinned dataset digests, splitter, models, numeric guards, tests, cost ratios
@@ -127,7 +132,20 @@ All figures derive only from the committed raw records via the committed scripts
 
 ## Citing This Work
 
-See [CITATION.cff](CITATION.cff). Version 0.1.0, released 2026-11-15, author Hugues Clouâtre (ORCID 0009-0002-4291-1999); a Zenodo DOI will be minted at the first archived release.
+If you use this exhibit or methodology, please cite it (metadata in [CITATION.cff](CITATION.cff)):
+
+```bibtex
+@dataset{clouatre2026classifiercost,
+  title  = {Classifier Cost Exhibit},
+  author = {Clouatre, Hugues},
+  year   = {2026},
+  note   = {Version 0.1.0},
+  doi    = {10.5281/zenodo.24259667},
+  url    = {https://github.com/clouatre-labs/classifier-cost-exhibit}
+}
+```
+
+Version 0.1.0, released 2026-11-15, author Hugues Clouâtre (ORCID 0009-0002-4291-1999, Université de Bordeaux). Release v0.1.0 and DOI [10.5281/zenodo.24259667](https://doi.org/10.5281/zenodo.24259667) archive the exhibit. The work is written up at [Accuracy, cost matrix, threshold](https://clouatre.ca/posts/accuracy-cost-matrix-threshold/).
 
 ## Lifecycle
 
