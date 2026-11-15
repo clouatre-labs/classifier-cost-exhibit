@@ -33,7 +33,7 @@ The table below covers all committed configuration artifacts. Issue templates, P
 | `AI_POLICY.md` | Policy on AI-assisted contributions and human accountability | repo |
 | `CONTRIBUTING.md` | Contribution guidelines | repo |
 | `SECURITY.md` | Vulnerability disclosure policy | repo |
-| `CITATION.cff` | Citation metadata template ({{REPO_NAME}}/{{TITLE}} placeholders) for the dataset | repo |
+| `CITATION.cff` | Citation metadata for the dataset | repo |
 | `.zenodo.json` | Zenodo deposit metadata template mirroring CITATION.cff | repo |
 | `METHODOLOGY.md` | Shared methodological contract: pre-registration, blind scoring, analysis plan, threats to validity | repo |
 | `DATA_DICTIONARY.md` | Field-level schema reference for `analysis.json` and `scores.json` | repo |

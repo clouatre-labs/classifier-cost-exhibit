@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for contributing to {{REPO_NAME}}. This repository hosts pre-registered experiments; the rules below exist to keep results trustworthy.
+Thanks for contributing to classifier-cost-exhibit. This repository hosts pre-registered experiments; the rules below exist to keep results trustworthy.
 
 ## Pre-Registration Requirement
 

@@ -1,20 +1,23 @@
 cff-version: 1.2.0
 message: "If you use this dataset, please cite it using the metadata below."
 type: dataset
-title: "{{TITLE}}"
+title: "Classifier Cost Exhibit"
 authors:
-  - family-names: "{{AUTHOR_FAMILY_NAMES}}"
-    given-names: "{{AUTHOR_GIVEN_NAMES}}"
-    orcid: "https://orcid.org/{{ORCID}}"
-repository-code: https://github.com/clouatre-labs/{{REPO_NAME}}
+  - family-names: "Clouatre"
+    given-names: "Hugues"
+    orcid: "https://orcid.org/0009-0002-4291-1999"
+repository-code: https://github.com/clouatre-labs/classifier-cost-exhibit
 license: Apache-2.0
-date-released: "{{RELEASE_DATE}}"
-version: "{{VERSION}}"
+date-released: "2026-11-15"
+version: "0.1.0"
 abstract: >
-  TODO: One-paragraph abstract describing the dataset and the experiments
-  it contains. Replace this placeholder before first release.
+  Pre-registered evaluation on the UCI SECOM dataset testing whether the
+  accuracy-optimal classifier misses more defects than a lower-accuracy
+  alternative under an explicit error-cost matrix, and whether a
+  cost-aligned decision threshold (p* = FP/(FP+FN)) reverses the ranking.
 keywords:
-  - llm-agents
+  - machine-learning
+  - cost-sensitive-learning
+  - imbalanced-data
   - pre-registered-experiment
   - reproducibility
-  - llm-evaluation
