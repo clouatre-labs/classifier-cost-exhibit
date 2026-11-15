@@ -751,7 +751,7 @@ def validate_discovery(base):
     for subdir in ("pilot", "raw"):
         records_dir = base / "results" / subdir
         if records_dir.is_dir():
-            fold_files = sorted(records_dir.glob("*.json"))
+            fold_files = sorted(records_dir.glob("fold-*.json"))
             if not fold_files:
                 print(f"Validation error: no fold records in {records_dir}")
                 all_ok = False
