@@ -4,11 +4,12 @@
   "upload_type": "dataset",
   "access_right": "open",
   "license": "Apache-2.0",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publication_date": "2026-11-15",
   "creators": [
     {
       "name": "Clouatre, Hugues",
+      "affiliation": "Université de Bordeaux",
       "orcid": "0009-0002-4291-1999"
     }
   ],
@@ -17,6 +18,11 @@
       "identifier": "https://github.com/clouatre-labs/classifier-cost-exhibit",
       "relation": "isIdenticalTo",
       "resource_type": "software"
+    },
+    {
+      "identifier": "https://clouatre.ca/posts/accuracy-cost-matrix-threshold/",
+      "relation": "references",
+      "resource_type": "publication-other"
     }
   ],
   "keywords": [
