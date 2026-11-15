@@ -5,7 +5,7 @@
 
 <h1 align="center">Classifier Cost Exhibit</h1>
 
-Classifier Cost Exhibit is a pre-registered evaluation on the UCI SECOM dataset testing whether the accuracy-optimal classifier misses more defects than a lower-accuracy alternative under an explicit error-cost matrix, and whether a cost-aligned decision threshold (p* = FP/(FP+FN)) reverses the ranking. Each experiment is committed before it runs: a protocol, runner prompt, and scorer prompt are fixed in git, results are collected as raw sessions, scoring is performed blind against a rubric, and the analyzed record validates against the schema in [DATA_DICTIONARY.md](DATA_DICTIONARY.md) in CI. This structure makes every reported number traceable to a pre-registered design and reproducible by anyone with repository access.
+Classifier Cost Exhibit is a pre-registered evaluation on the UCI SECOM dataset testing whether the accuracy-optimal classifier misses more defects than a lower-accuracy alternative under an explicit error-cost matrix, and whether a cost-aligned decision threshold (p* = FP/(FP+FN)) reverses the ranking. The experiment is committed before it runs: the splitter, preprocessing pipeline, models, seeds, cost ratios, and statistical test are fixed in seal.json before any fit() call, results are collected as raw per-fold records with full y_true/y_prob arrays, and the analyzed record validates against the schema in [DATA_DICTIONARY.md](DATA_DICTIONARY.md) in CI. This structure makes every reported number traceable to a pre-registered design and reproducible by anyone with repository access.
 
 ## Lifecycle
 
