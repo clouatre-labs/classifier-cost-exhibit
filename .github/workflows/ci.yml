@@ -12,6 +12,10 @@ on:
       - "docs/**"
       - "experiments/**"
       - "recipe/**"
+      - "results/**"
+      - "seal.json"
+      - "pipeline.py"
+      - "analysis.py"
       - "validate_schema.py"
       - "**.md"
 

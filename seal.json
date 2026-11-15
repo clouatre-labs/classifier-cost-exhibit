@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0.0",
+  "experiment": "secom-cost-threshold",
+  "title": "Accuracy vs fail-class recall inversion under asymmetric error costs on UCI SECOM",
+  "sealed_before_run": true,
+  "dataset": {
+    "name": "UCI SECOM",
+    "uci_id": 179,
+    "url": "https://archive.ics.uci.edu/static/public/179/secom.zip",
+    "label_mapping": {"-1": "pass (0)", "1": "fail (1)"},
+    "class_counts": {"pass_0": 1463, "fail_1": 104},
+    "files": {
+      "secom.data": {
+        "sha256": "20f0e7ee434f7dcbae0eea9ffff009a2b57f42d6b0dc9a5bd4f00782c0a3374c",
+        "rows": 1567,
+        "columns": 590,
+        "shape": [1567, 590]
+      },
+      "secom_labels.data": {
+        "sha256": "126884cf453705c9e61a903fe906f0665a3b45ce3639e621edc5c93c89627e03",
+        "rows": 1567,
+        "columns": 2,
+        "timestamp_column_ignored": true
+      }
+    }
+  },
+  "splitter": {
+    "class": "RepeatedStratifiedKFold",
+    "n_splits": 10,
+    "n_repeats": 3,
+    "random_state": 0
+  },
+  "models": {
+    "knn": {
+      "estimator": "KNeighborsClassifier",
+      "params": {},
+      "random_state": null
+    },
+    "decision_tree": {
+      "estimator": "DecisionTreeClassifier",
+      "params": {},
+      "random_state": 0
+    },
+    "random_forest": {
+      "estimator": "RandomForestClassifier",
+      "params": {},
+      "random_state": 0
+    },
+    "logistic_regression": {
+      "estimator": "LogisticRegression",
+      "params": {"max_iter": 1000},
+      "random_state": 0
+    }
+  },
+  "preprocessing": [
+    "SimpleImputer(strategy=\"median\")",
+    "drop columns with std < 1e-12",
+    "drop correlated pairs (|r| > 0.95, keep lower-indexed column)",
+    "StandardScaler"
+  ],
+  "preprocessing_fit": "per model fold, train folds only (leakage-safe by construction)",
+  "numeric_guards": {
+    "variance_drop_std_below": 1e-12,
+    "correlation_abs_drop_above": 0.95,
+    "zero_division": 0,
+    "serialization_allow_nan": false
+  },
+  "primary_endpoint": {
+    "comparison": "accuracy-best model (ranked first by mean accuracy) vs challenger (ranked second by mean accuracy)",
+    "metric": "fail-class recall",
+    "test": "two-sided exact binomial sign test on per-fold differences (challenger minus accuracy-best)",
+    "alpha": 0.05,
+    "tie_rule": "exclude per-fold differences where d == 0; report k/n_nonzero inferentially and k/n_total descriptively",
+    "secondary": "descriptive majority-inversion count across folds"
+  },
+  "cost_analysis": {
+    "formula": "expected_cost = fn_cost * FN + fp_cost * FP",
+    "fn_fp_ratio_baseline": [14, 1],
+    "fn_fp_ratio_sensitivity": [10, 1],
+    "p_star_expression": "1.0 / (1.0 + 14.0)",
+    "p_star_definition": "FP cost / (FP cost + FN cost) at the baseline ratio",
+    "thresholds_compared": [0.5, "p_star"],
+    "sweep": "descriptive only"
+  },
+  "record_contents": {
+    "scalar_metrics": ["accuracy", "recall_fail", "precision_fail", "fn", "fp"],
+    "arrays": ["y_true", "y_prob"],
+    "float_precision": "full",
+    "layout": "one JSON file per fold, four model records each"
+  }
+}
