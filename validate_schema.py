@@ -262,7 +262,180 @@ def validate_record(data, expected_slug=None):
     return errors
 
 
+def validate_fold_record(data):
+    """Validate a per-fold SECOM record under results/{pilot,raw}/."""
+    errors = []
+    if not isinstance(data, dict):
+        return [f"not an object: {type(data).__name__}"]
+    for field in ["schema_version", "run_kind", "experiment", "splitter", "fold", "models"]:
+        if field not in data:
+            errors.append(f"missing required key {field}")
+    if "schema_version" in data and data["schema_version"] != "1.0.0":
+        errors.append("schema_version is not '1.0.0'")
+    if "run_kind" in data and data["run_kind"] not in ("pilot", "sealed"):
+        errors.append("run_kind is not in ['pilot', 'sealed']")
+    splitter = data.get("splitter")
+    if not isinstance(splitter, dict):
+        errors.append("splitter is not an object")
+    else:
+        for field in ["class", "n_splits", "n_repeats", "random_state"]:
+            if field not in splitter:
+                errors.append(f"missing required key splitter.{field}")
+        if "class" in splitter and splitter["class"] != "RepeatedStratifiedKFold":
+            errors.append("splitter.class is not 'RepeatedStratifiedKFold'")
+        if not isinstance(splitter.get("random_state"), int):
+            errors.append("splitter.random_state is not an integer")
+    fold = data.get("fold")
+    if not isinstance(fold, dict):
+        errors.append("fold is not an object")
+    else:
+        for field in ["repeat", "split", "index"]:
+            if not isinstance(fold.get(field), int) or isinstance(fold.get(field), bool):
+                errors.append(f"fold.{field} is not an integer")
+    models = data.get("models")
+    if not isinstance(models, list) or not models:
+        errors.append("models is not a non-empty array")
+        return errors
+    seen = set()
+    allowed = {"knn", "decision_tree", "random_forest", "logistic_regression"}
+    for entry in models:
+        if not isinstance(entry, dict):
+            errors.append("model entry is not an object")
+            continue
+        name = entry.get("model")
+        if name not in allowed:
+            errors.append(f"model {name!r} is not one of {sorted(allowed)}")
+        if name in seen:
+            errors.append(f"duplicate model entry {name!r}")
+        seen.add(name)
+        metrics = entry.get("metrics")
+        if not isinstance(metrics, dict):
+            errors.append(f"model {name!r} metrics is not an object")
+        else:
+            for field in ["accuracy", "recall_fail", "precision_fail"]:
+                value = metrics.get(field)
+                if not _is_finite_number(value) or value < 0:
+                    errors.append(f"model {name!r} metrics.{field} is not a non-negative finite number")
+            for field in ["fn", "fp"]:
+                if not _is_int(metrics.get(field)) or metrics[field] < 0:
+                    errors.append(f"model {name!r} metrics.{field} is not a non-negative integer")
+        features = entry.get("features")
+        if not isinstance(features, dict):
+            errors.append(f"model {name!r} features is not an object")
+        else:
+            for field in ["raw", "after_variance", "after_correlation"]:
+                if not _is_int(features.get(field)) or features[field] < 0:
+                    errors.append(f"model {name!r} features.{field} is not a non-negative integer")
+        y_true = entry.get("y_true")
+        y_prob = entry.get("y_prob")
+        if not isinstance(y_true, list) or not y_true:
+            errors.append(f"model {name!r} y_true is not a non-empty array")
+            y_true = None
+        elif not all(_is_int(v) and v in (0, 1) for v in y_true):
+            errors.append(f"model {name!r} y_true values are not all 0 or 1")
+        if not isinstance(y_prob, list):
+            errors.append(f"model {name!r} y_prob is not an array")
+        elif y_true is not None and len(y_prob) != len(y_true):
+            errors.append(f"model {name!r} y_prob length does not match y_true")
+        else:
+            if not all(_is_finite_number(v) and 0.0 <= v <= 1.0 for v in y_prob):
+                errors.append(f"model {name!r} y_prob values are not finite numbers in [0, 1]")
+    return errors
+
+
+MINIMAL_VALID_SEAL = {
+    "schema_version": "1.0.0",
+    "experiment": "secom-cost-threshold",
+    "sealed_before_run": True,
+    "dataset": {
+        "name": "UCI SECOM",
+        "url": "https://example.invalid/secom.zip",
+        "class_counts": {"pass_0": 1463, "fail_1": 104},
+        "files": {
+            "secom.data": {"sha256": "a" * 64, "rows": 1567, "columns": 590},
+            "secom_labels.data": {"sha256": "b" * 64, "rows": 1567},
+        },
+    },
+    "splitter": {"class": "RepeatedStratifiedKFold", "n_splits": 10,
+                 "n_repeats": 3, "random_state": 0},
+    "models": {
+        "knn": {"estimator": "KNeighborsClassifier", "params": {}, "random_state": None},
+        "decision_tree": {"estimator": "DecisionTreeClassifier", "params": {},
+                          "random_state": 0},
+        "random_forest": {"estimator": "RandomForestClassifier", "params": {},
+                          "random_state": 0},
+        "logistic_regression": {"estimator": "LogisticRegression",
+                                "params": {"max_iter": 1000}, "random_state": 0},
+    },
+    "numeric_guards": {"variance_drop_std_below": 1e-12,
+                       "correlation_abs_drop_above": 0.95, "zero_division": 0},
+}
+
+
+def validate_seal(data):
+    """Validate the pre-registered seal.json."""
+    errors = []
+    if not isinstance(data, dict):
+        return [f"not an object: {type(data).__name__}"]
+    for field in ["schema_version", "experiment", "dataset", "splitter", "models", "numeric_guards"]:
+        if field not in data:
+            errors.append(f"missing required key {field}")
+    if data.get("sealed_before_run") is not True:
+        errors.append("sealed_before_run is not true")
+    splitter = data.get("splitter")
+    if isinstance(splitter, dict):
+        if (splitter.get("n_splits"), splitter.get("n_repeats"), splitter.get("random_state")) != (10, 3, 0):
+            errors.append("splitter is not pinned to n_splits=10, n_repeats=3, random_state=0")
+    guards = data.get("numeric_guards")
+    if isinstance(guards, dict) and guards.get("zero_division") != 0:
+        errors.append("numeric_guards.zero_division is not 0")
+    models = data.get("models")
+    if isinstance(models, dict):
+        if set(models) != {"knn", "decision_tree", "random_forest", "logistic_regression"}:
+            errors.append("models must contain exactly knn, decision_tree, random_forest, logistic_regression")
+        knn = models.get("knn")
+        if isinstance(knn, dict) and knn.get("random_state") is not None:
+            errors.append("knn.random_state must be null (estimator does not accept it)")
+    return errors
+
+
+def validate_fold_path(path):
+    try:
+        with open(path) as f:
+            data = _load_json_strict(f.read())
+    except (OSError, ValueError) as exc:
+        print(f"Failed to load {path}: {exc}")
+        return False
+    errors = validate_fold_record(data)
+    if errors:
+        for error in errors:
+            print(f"{path}: {error}")
+        return False
+    return True
+
+
+def validate_seal_path(path):
+    try:
+        with open(path) as f:
+            data = _load_json_strict(f.read())
+    except (OSError, ValueError) as exc:
+        print(f"Failed to load {path}: {exc}")
+        return False
+    errors = validate_seal(data)
+    if errors:
+        for error in errors:
+            print(f"{path}: {error}")
+        return False
+    return True
+
+
 def validate_path(path):
+    path = pathlib.Path(path)
+    parts = path.parts
+    if path.name == "seal.json":
+        return validate_seal_path(path)
+    if len(parts) >= 2 and parts[0] == "results" and parts[1] in ("pilot", "raw"):
+        return validate_fold_path(path)
     try:
         with open(path) as f:
             data = _load_json_strict(f.read())
@@ -505,6 +678,64 @@ def self_test():
                 return False
         finally:
             shutil.rmtree(empty_base)
+    # Fold-record schema: one happy path, representative edge cases.
+    minimal_fold = {
+        "schema_version": "1.0.0",
+        "run_kind": "pilot",
+        "experiment": "secom-cost-threshold",
+        "date": "2026-11-15",
+        "splitter": {"class": "RepeatedStratifiedKFold", "n_splits": 10,
+                     "n_repeats": 1, "random_state": 0},
+        "fold": {"repeat": 0, "split": 0, "index": 0},
+        "models": [{
+            "model": "knn",
+            "wall_clock_seconds": 0.1,
+            "metrics": {"accuracy": 0.9, "recall_fail": 0.1,
+                        "precision_fail": 0.5, "fn": 5, "fp": 2},
+            "features": {"raw": 590, "after_variance": 474, "after_correlation": 284},
+            "y_true": [0, 1, 1],
+            "y_prob": [0.2, 0.8, 0.0],
+        }],
+    }
+    if validate_fold_record(minimal_fold):
+        print(f"self-test FAILED: valid fold record rejected: {validate_fold_record(minimal_fold)}")
+        return False
+    fold_cases = [
+        ({**minimal_fold, "run_kind": "sealed_extra"}, "run_kind is not in", "invalid run_kind"),
+        ({**minimal_fold, "models": []}, "models is not a non-empty array", "empty models"),
+        (
+            {**minimal_fold,
+             "models": [{**minimal_fold["models"][0], "y_prob": [0.2, 0.8]}]},
+            "y_prob length does not match y_true",
+            "y_prob length mismatch",
+        ),
+        (
+            {**minimal_fold,
+             "models": [{**minimal_fold["models"][0], "y_prob": [0.2, 1.5, 0.0]}]},
+            "y_prob values are not finite numbers in [0, 1]",
+            "out-of-range y_prob",
+        ),
+    ]
+    for record, substring, label in fold_cases:
+        errors = validate_fold_record(record)
+        if not any(substring in error for error in errors):
+            print(f"self-test FAILED: fold {label} not caught: {errors}")
+            return False
+    if not validate_fold_record("not-an-object"):
+        print("self-test FAILED: scalar fold top level not caught")
+        return False
+    if validate_seal(MINIMAL_VALID_SEAL):
+        print(f"self-test FAILED: valid seal rejected: {validate_seal(MINIMAL_VALID_SEAL)}")
+        return False
+    bad_seal = json.loads(json.dumps(MINIMAL_VALID_SEAL))
+    bad_seal["splitter"] = {"class": "KFold", "n_splits": 5, "n_repeats": 1, "random_state": 7}
+    bad_seal["models"]["knn"]["random_state"] = 0
+    seal_errors = validate_seal(bad_seal)
+    if not any("splitter is not pinned" in error for error in seal_errors) or not any(
+        "knn.random_state" in error for error in seal_errors
+    ):
+        print(f"self-test FAILED: seal violations not caught: {seal_errors}")
+        return False
     print(
         "self-test passed: valid record accepted, each rule rejects its invalid case, discovery flags missing analysis.json"
     )
@@ -512,10 +743,26 @@ def self_test():
 
 
 def validate_discovery(base):
-    experiments_dir = pathlib.Path(base) / "experiments"
+    base = pathlib.Path(base)
+    all_ok = True
+    seal = base / "seal.json"
+    if seal.is_file() and not validate_seal_path(seal):
+        all_ok = False
+    for subdir in ("pilot", "raw"):
+        records_dir = base / "results" / subdir
+        if records_dir.is_dir():
+            fold_files = sorted(records_dir.glob("*.json"))
+            if not fold_files:
+                print(f"Validation error: no fold records in {records_dir}")
+                all_ok = False
+            for path in fold_files:
+                if not validate_fold_path(path):
+                    all_ok = False
+    experiments_dir = base / "experiments"
     if not experiments_dir.is_dir():
-        print("No experiments/ directory found; nothing to validate.")
-        return True
+        if all_ok:
+            print("No experiments/ directory found; nothing to validate.")
+        return all_ok
     exp_dirs = sorted(
         d
         for d in experiments_dir.iterdir()
