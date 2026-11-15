@@ -112,12 +112,13 @@ def fold_matrix(records):
 
 
 def exact_binomial_two_sided(k, n):
-    """Two-sided exact binomial p-value under p=0.5 via math.comb."""
+    """Two-sided exact binomial p-value under p=0.5: 2 x the smaller tail,
+    capped at 1 (min(P(X<=k), P(X>=k)) doubled; correct at k=0 and k=n)."""
     if n == 0:
         return 1.0
-    tail = sum(math.comb(n, i) for i in range(0, min(k, n) + 1)) / (2.0 ** n)
-    upper = sum(math.comb(n, i) for i in range(max(0, n - k), n + 1)) / (2.0 ** n)
-    return min(1.0, tail + upper)
+    lower = sum(math.comb(n, i) for i in range(0, k + 1)) / (2.0 ** n)
+    upper = sum(math.comb(n, i) for i in range(k, n + 1)) / (2.0 ** n)
+    return min(1.0, 2.0 * min(lower, upper))
 
 
 def expected_cost(y_true, y_prob, threshold, fn_cost, fp_cost):

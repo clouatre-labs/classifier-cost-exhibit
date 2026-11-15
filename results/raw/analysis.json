@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0.0",
+  "experiment": "secom-cost-threshold",
+  "n_folds": 30,
+  "p_star": 0.06666666666666667,
+  "mean_accuracy": {
+    "decision_tree": 0.8725910501388209,
+    "knn": 0.9298110947792477,
+    "logistic_regression": 0.891710218302575,
+    "random_forest": 0.9336354728074473
+  },
+  "mean_recall_fail": {
+    "decision_tree": 0.1603030303030303,
+    "knn": 0.03878787878787879,
+    "logistic_regression": 0.2181818181818182,
+    "random_forest": 0.0
+  },
+  "mean_precision_fail": {
+    "decision_tree": 0.13372642607936724,
+    "knn": 0.19444444444444445,
+    "logistic_regression": 0.20953278203278203,
+    "random_forest": 0.0
+  },
+  "accuracy_ranking": [
+    "random_forest",
+    "knn",
+    "logistic_regression",
+    "decision_tree"
+  ],
+  "accuracy_best": "random_forest",
+  "challenger": "knn",
+  "primary": {
+    "sign_test": "two-sided exact binomial on nonzero per-fold recall differences",
+    "k_challenger_better": 10,
+    "n_nonzero": 10,
+    "p_value": 0.001953125,
+    "alpha": 0.05,
+    "significant": true,
+    "mean_recall_best": 0.0,
+    "mean_recall_challenger": 0.03878787878787879,
+    "inversions_descriptive": "10/30"
+  },
+  "cost": {
+    "decision_tree": {
+      "cost_at_0_5_baseline": 4005,
+      "cost_at_p_star_baseline": 4005,
+      "cost_at_0_5_sensitivity": 2957,
+      "cost_at_p_star_sensitivity": 2957
+    },
+    "knn": {
+      "cost_at_0_5_baseline": 4230,
+      "cost_at_p_star_baseline": 3556,
+      "cost_at_0_5_sensitivity": 3030,
+      "cost_at_p_star_sensitivity": 2808
+    },
+    "logistic_regression": {
+      "cost_at_0_5_baseline": 3681,
+      "cost_at_p_star_baseline": 3380,
+      "cost_at_0_5_sensitivity": 2705,
+      "cost_at_p_star_sensitivity": 2620
+    },
+    "random_forest": {
+      "cost_at_0_5_baseline": 4368,
+      "cost_at_p_star_baseline": 2991,
+      "cost_at_0_5_sensitivity": 3120,
+      "cost_at_p_star_sensitivity": 2659
+    }
+  },
+  "cost_ranking_at_p_star_baseline": [
+    "random_forest",
+    "logistic_regression",
+    "knn",
+    "decision_tree"
+  ],
+  "ranking_flip_vs_accuracy": false
+}
