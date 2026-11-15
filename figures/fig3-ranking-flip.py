@@ -17,10 +17,10 @@ RAW = ROOT / "results" / "raw"
 FN_COST, FP_COST = 14.0, 1.0
 DEFAULT_THRESHOLD = 0.5
 COLORS = {
-    "random_forest": "#d62728",
-    "knn": "#1f77b4",
-    "logistic_regression": "#2ca02c",
-    "decision_tree": "#9467bd",
+    "random_forest": "#D55E00",
+    "knn": "#0072B2",
+    "logistic_regression": "#009E73",
+    "decision_tree": "#CC79A7",
 }
 
 
@@ -54,11 +54,17 @@ def main():
     ):
         names = list(reversed(ranking))  # rank 1 at top
         vals = [values[n] for n in names]
-        ax.barh(names, vals, color=[COLORS[n] for n in names])
-        for i, v in enumerate(vals):
-            ax.text(v, i, " " + fmt.format(v), va="center", fontsize=8)
+        bars = ax.barh(names, vals, color=[COLORS[n] for n in names])
+        vmax = max(vals)
+        ax.set_xlim(0, vmax * 1.12)  # headroom so labels never clip
+        for bar, v in zip(bars, vals):
+            ax.text(v - vmax * 0.015, bar.get_y() + bar.get_height() / 2,
+                    fmt.format(v), va="center", ha="right", fontsize=8.5,
+                    color="white", fontweight="bold")
         ax.set_title(title, fontsize=9)
         ax.set_xticks([])
+        ax.spines["right"].set_visible(False)
+        ax.spines["top"].set_visible(False)
     fig.suptitle("The accuracy-best model (random forest) is cost-worst at the default threshold",
                  fontsize=10)
     fig.tight_layout()

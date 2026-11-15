@@ -36,21 +36,17 @@ def main():
     fig, ax = plt.subplots(figsize=(8, 4.5), dpi=150)
     xs = range(n)
     ax.scatter(xs, recall_chal, marker="o", s=28, label=f"{CHALLENGER} recall (challenger)",
-               color="#1f77b4", alpha=0.85)
-    ax.scatter(xs, recall_best, marker="s", s=28, label=f"{BEST} recall (accuracy-best, 0 in all 30 folds)",
-               color="#d62728", alpha=0.85)
-    ax.plot(xs, acc_chal, linestyle=":", linewidth=1, color="#1f77b4", alpha=0.5,
+               color="#0072B2", alpha=0.85)
+    ax.scatter(xs, recall_best, marker="s", s=28, label=f"{BEST} recall (accuracy-best)",
+               color="#D55E00", alpha=0.85)
+    ax.plot(xs, acc_chal, linestyle=":", linewidth=1, color="#0072B2", alpha=0.5,
             label=f"{CHALLENGER} accuracy")
-    ax.plot(xs, acc_best, linestyle="--", linewidth=1, color="#d62728", alpha=0.5,
+    ax.plot(xs, acc_best, linestyle="--", linewidth=1, color="#D55E00", alpha=0.5,
             label=f"{BEST} accuracy")
     ax.set_xlabel("Fold (3 repeats x 10 splits)")
     ax.set_ylabel("Metric value")
     ax.set_title("Fail-class recall: accuracy-best (random forest) vs challenger (k-NN)")
     ax.set_ylim(-0.03, 1.03)
-    ax.annotate("random forest detects zero defects in every fold;\n"
-                "k-NN detects defects in 10 of 30 folds",
-                xy=(0.02, 0.32), xycoords="axes fraction", fontsize=8.5,
-                bbox=dict(boxstyle="round,pad=0.35", fc="#fff3f3", ec="#d62728", alpha=0.9))
     ax.legend(fontsize=8, loc="center right")
     fig.tight_layout()
     out = pathlib.Path(__file__).parent / "fig1-recall-inversion.png"
