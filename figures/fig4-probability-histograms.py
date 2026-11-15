@@ -15,10 +15,10 @@ import matplotlib.pyplot as plt
 RAW = pathlib.Path(__file__).parent.parent / "results" / "raw"
 MODELS = ["random_forest", "knn", "logistic_regression", "decision_tree"]
 COLORS = {
-    "random_forest": "#d62728",
-    "knn": "#1f77b4",
-    "logistic_regression": "#2ca02c",
-    "decision_tree": "#9467bd",
+    "random_forest": "#D55E00",
+    "knn": "#0072B2",
+    "logistic_regression": "#009E73",
+    "decision_tree": "#CC79A7",
 }
 
 

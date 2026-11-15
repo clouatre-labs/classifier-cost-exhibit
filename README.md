@@ -72,23 +72,23 @@ Sensitivity at the 10:1 ratio preserves the p* ordering (logistic regression 262
 
 ## Figures
 
-All figures derive only from the committed raw records via the committed scripts in `figures/`; regenerate with `uv run --with matplotlib python figures/<script>.py`.
+All figures derive only from the committed raw records via the committed scripts in `figures/`; regenerate with `uv run --with matplotlib python figures/<script>.py`. (Colors use the Okabe-Ito colorblind-safe palette.)
 
 ![Per-fold fail-class recall of the accuracy-best random forest against the k-NN challenger with per-fold accuracy overlaid](figures/fig1-recall-inversion.png)
 
-*Figure 1: Per-fold fail-class recall (markers) and accuracy (lines) over the 30 fold-evaluations. The accuracy-best random forest sits at zero recall in every fold while matching the challenger's accuracy within ~0.004.*
+*Figure 1: Per-fold fail-class recall (markers) and accuracy (lines) over the 30 fold-evaluations. The accuracy-best random forest is at zero recall in all 30 folds; the k-NN challenger has nonzero recall in 10 of 30 (0.09-0.20) while matching its accuracy within 0.004.*
 
 ![Expected cost versus decision threshold per model at the 14:1 ratio with verticals at the default 0.5 and p* = 1/15](figures/fig2-cost-vs-threshold.png)
 
-*Figure 2: Expected cost versus decision threshold per model at the 14:1 ratio. The random forest's dip bottoms out near p*; the decision tree is threshold-invariant.*
+*Figure 2: Expected cost versus decision threshold per model at the 14:1 FN:FP ratio; dashed vertical marks the default 0.5 threshold, dotted vertical the cost-aligned p\* = 1/15. The random forest's cost minimum lies at p\*; the decision tree is threshold-invariant.*
 
 ![Model ranking by mean accuracy versus ranking by expected cost at the 0.5 threshold](figures/fig3-ranking-flip.png)
 
-*Figure 3: Ranking by mean accuracy (left) versus expected cost at the default threshold, 14:1 (right). The random forest moves from first to last.*
+*Figure 3: Ranking by mean accuracy (left) versus expected cost at the default 0.5 threshold, 14:1 FN:FP (right). The random forest moves from first to last.*
 
 ![Predicted fail-class probability histograms per model with verticals at 0.5 and 1/15](figures/fig4-probability-histograms.png)
 
-*Figure 4: Predicted fail-class probability distributions (fail units rescaled for visibility). Random forest and logistic regression produce graded outputs; the decision tree is degenerate at 0/1.*
+*Figure 4: Predicted fail-class probability distributions per model (fail units rescaled for visibility); dashed vertical at 0.5, dotted at 1/15. Random forest and logistic regression produce graded outputs; the decision tree is degenerate at 0 and 1.*
 
 ## Repository Layout
 

@@ -16,10 +16,10 @@ RAW = pathlib.Path(__file__).parent.parent / "results" / "raw"
 P_STAR = 1.0 / (1.0 + 14.0)
 FN_COST, FP_COST = 14.0, 1.0
 COLORS = {
-    "random_forest": "#d62728",
-    "knn": "#1f77b4",
-    "logistic_regression": "#2ca02c",
-    "decision_tree": "#9467bd",
+    "random_forest": "#D55E00",
+    "knn": "#0072B2",
+    "logistic_regression": "#009E73",
+    "decision_tree": "#CC79A7",
 }
 
 
@@ -51,7 +51,7 @@ def main():
                label=r"p* = 1/15 ≈ 0.067")
     ax.set_xlabel("Decision threshold (fail-class probability cutoff)")
     ax.set_ylabel("Total expected cost (FN:FP = 14:1)")
-    ax.set_title("Expected cost vs threshold; minimum marks each model's cost-aligned operating point")
+    ax.set_title("Expected cost vs decision threshold per model at the 14:1 FN:FP ratio")
     ax.legend(fontsize=8)
     fig.tight_layout()
     out = pathlib.Path(__file__).parent / "fig2-cost-vs-threshold.png"
