@@ -2,18 +2,17 @@
 
 ## Project overview
 
-<!-- One paragraph: what this repo does, who uses it, primary language/framework. -->
-<!-- Example: "Rust MCP server for code structure analysis using tree-sitter" -->
+Pre-registered evaluation exhibit on the UCI SECOM dataset: tests whether the accuracy-optimal classifier misses more defects than a lower-accuracy alternative under an explicit error-cost matrix, and whether a cost-aligned decision threshold (p* = FP/(FP+FN)) reverses the ranking. Python (stdlib-only validator via uv); one directory per pre-registered experiment under `experiments/`.
 
 ## Stack & Commands
 
-<!-- Fill in: language/runtime, package manager, key frameworks -->
+Python 3 via [uv](https://docs.astral.sh/uv/); no third-party dependencies.
 
 ```
-# build:  <fill in>
-# test:   <fill in>
-# lint:   <fill in>
-# format: <fill in>
+# build:  n/a (analysis repo; figures regenerate via recipe/)
+# test:   uv run python validate_schema.py --self-test
+# lint:   uv run python validate_schema.py
+# format: n/a
 ```
 
 ## Labels and Milestones
@@ -35,10 +34,10 @@
 
 ## Design references
 
-<!-- Link internal docs the AI agent should read before implementing:
-- ARCHITECTURE.md (if it exists)
-- Any API spec or data model doc
--->
+- [METHODOLOGY.md](METHODOLOGY.md): shared experimental design contract (pre-registration, blind scoring, analysis plan)
+- [DATA_DICTIONARY.md](DATA_DICTIONARY.md): schema for `analysis.json` and `scores.json`
+- [docs/REPO-STANDARDS.md](docs/REPO-STANDARDS.md): artifact map and post-clone checklist
+- [experiments/README.md](experiments/README.md): experiment directory layout
 
 ## Do not
 

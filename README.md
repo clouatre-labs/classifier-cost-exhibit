@@ -3,9 +3,9 @@
   <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template"><img alt="GitHub Template" src="https://img.shields.io/badge/GitHub-Template-blue.svg?style=for-the-badge&logo=github" height="20"></a>
 </p>
 
-<h1 align="center">{{REPO_NAME}}</h1>
+<h1 align="center">Classifier Cost Exhibit</h1>
 
-{{REPO_NAME}} is a template repository for pre-registered LLM experiments. Each experiment is committed before it runs: a protocol, runner prompt, and scorer prompt are fixed in git, results are collected as raw sessions, scoring is performed blind against a rubric, and the analyzed record validates against the schema in [DATA_DICTIONARY.md](DATA_DICTIONARY.md) in CI. This structure makes every reported number traceable to a pre-registered design and reproducible by anyone with repository access.
+Classifier Cost Exhibit is a pre-registered evaluation on the UCI SECOM dataset testing whether the accuracy-optimal classifier misses more defects than a lower-accuracy alternative under an explicit error-cost matrix, and whether a cost-aligned decision threshold (p* = FP/(FP+FN)) reverses the ranking. Each experiment is committed before it runs: a protocol, runner prompt, and scorer prompt are fixed in git, results are collected as raw sessions, scoring is performed blind against a rubric, and the analyzed record validates against the schema in [DATA_DICTIONARY.md](DATA_DICTIONARY.md) in CI. This structure makes every reported number traceable to a pre-registered design and reproducible by anyone with repository access.
 
 ## Lifecycle
 
@@ -24,7 +24,7 @@ The rendered diagram is optional; the Mermaid source above is the canonical arti
 
 | Slug | Question | Status | Key Result |
 |------|----------|--------|------------|
-| `<slug>` | TODO | planned \| running \| analyzed | TODO |
+| `secom-cost-threshold` | Does the accuracy-optimal classifier miss more defects than a lower-accuracy alternative, and does a cost-aligned threshold (p* = FP/(FP+FN)) reverse the ranking? | planned | — |
 
 ## Repository Layout
 
@@ -51,8 +51,8 @@ Each experiment directory under `experiments/` contains its protocol, runner and
 
 ## Citing This Work
 
-See [CITATION.cff](CITATION.cff). TODO: fill in authors, version, release date, and DOI before first release.
+See [CITATION.cff](CITATION.cff). Version 0.1.0, released 2026-11-15, author Hugues Clouatre (ORCID 0009-0002-4291-1999); a Zenodo DOI will be minted at the first archived release.
 
-## Using This Template
+## Exhibit Design
 
-Clone or click **Use this template**, then run `bash scripts/bootstrap.sh` to create standard labels and work through the post-clone checklist in [docs/REPO-STANDARDS.md](docs/REPO-STANDARDS.md). Replace all `{{...}}` placeholders in this README, [CITATION.cff](CITATION.cff), `.zenodo.json`, and [CONTRIBUTING.md](CONTRIBUTING.md).
+The experiment fixes an error-cost matrix and a pre-registered decision-threshold rule before any model is fit. Two candidate classifiers are compared: the accuracy-optimal choice and a lower-accuracy alternative chosen for fewer false negatives. The primary endpoints are total cost under the matrix at the default 0.5 threshold and at the cost-aligned threshold p* = FP/(FP+FN); the exhibit tests whether threshold alignment alone reverses the accuracy ranking.

@@ -1,31 +1,32 @@
 {
-  "title": "{{TITLE}}",
-  "description": "TODO: One-paragraph description of the dataset and associated experiments. Replace this placeholder before first release.",
+  "title": "Classifier Cost Exhibit",
+  "description": "Pre-registered evaluation on the UCI SECOM dataset testing whether the accuracy-optimal classifier misses more defects than a lower-accuracy alternative under an explicit error-cost matrix, and whether a cost-aligned decision threshold (p* = FP/(FP+FN)) reverses the ranking.",
   "upload_type": "dataset",
   "access_right": "open",
   "license": "Apache-2.0",
-  "version": "{{VERSION}}",
-  "publication_date": "{{RELEASE_DATE}}",
+  "version": "0.1.0",
+  "publication_date": "2026-11-15",
   "creators": [
     {
-      "name": "{{AUTHOR_FAMILY_NAMES}}, {{AUTHOR_GIVEN_NAMES}}",
-      "orcid": "{{ORCID}}"
+      "name": "Clouatre, Hugues",
+      "orcid": "0009-0002-4291-1999"
     }
   ],
   "related_identifiers": [
     {
-      "identifier": "https://github.com/clouatre-labs/{{REPO_NAME}}",
+      "identifier": "https://github.com/clouatre-labs/classifier-cost-exhibit",
       "relation": "isIdenticalTo",
       "resource_type": "software"
     }
   ],
   "keywords": [
-    "llm-agents",
+    "machine-learning",
+    "cost-sensitive-learning",
+    "imbalanced-data",
     "pre-registered-experiment",
-    "reproducibility",
-    "llm-evaluation"
+    "reproducibility"
   ],
   "custom": {
-    "code:codeRepository": "https://github.com/clouatre-labs/{{REPO_NAME}}"
+    "code:codeRepository": "https://github.com/clouatre-labs/classifier-cost-exhibit"
   }
 }
