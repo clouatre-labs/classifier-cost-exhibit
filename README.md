@@ -132,18 +132,7 @@ This repository contains the complete sealed protocol, raw per-fold records, ana
 
 ## Citing This Work
 
-If you use this exhibit or methodology, please cite it (metadata in [CITATION.cff](CITATION.cff)):
-
-```bibtex
-@dataset{clouatre2026classifiercost,
-  title  = {Classifier Cost Exhibit},
-  author = {Clouatre, Hugues},
-  year   = {2026},
-  note   = {Version 0.1.1},
-  doi    = {10.5281/zenodo.24259667},
-  url    = {https://github.com/clouatre-labs/classifier-cost-exhibit}
-}
-```
+If you cite this work, see [CITATION.cff](CITATION.cff) or:
 
 Version 0.1.1, released 2026-11-15, author Hugues Clouâtre (ORCID 0009-0002-4291-1999, Université de Bordeaux). Release v0.1.0 and DOI [10.5281/zenodo.24259667](https://doi.org/10.5281/zenodo.24259667) archive the exhibit. The work is written up at [Accuracy, cost matrix, threshold](https://clouatre.ca/posts/accuracy-cost-matrix-threshold/).
 
