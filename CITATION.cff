@@ -8,6 +8,7 @@ authors:
     orcid: "https://orcid.org/0009-0002-4291-1999"
     affiliation: "Université de Bordeaux"
 repository-code: https://github.com/clouatre-labs/classifier-cost-exhibit
+url: https://clouatre.ca/posts/accuracy-cost-matrix-threshold/
 license: Apache-2.0
 date-released: "2026-11-15"
 version: "0.1.1"
